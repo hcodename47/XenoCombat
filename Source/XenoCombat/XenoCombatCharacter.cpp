@@ -11,6 +11,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 
+#include "TargetingComponent.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -80,6 +82,10 @@ void AXenoCombatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
+		EnhancedInputComponent->BindAction(TargetAction, ETriggerEvent::Started, this, &AXenoCombatCharacter::Target);
+
+		EnhancedInputComponent->BindAction(CombatAction, ETriggerEvent::Started, this, &AXenoCombatCharacter::Combat);
+
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AXenoCombatCharacter::Move);
 
@@ -90,6 +96,23 @@ void AXenoCombatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void AXenoCombatCharacter::Target(const FInputActionValue& Value)
+{
+	if(UTargetingComponent* TargetingComponent = FindComponentByClass<UTargetingComponent>())
+	{
+		TargetingComponent->PickTarget();
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player actor has no targeting component!"));
+	}
+}
+
+void AXenoCombatCharacter::Combat(const FInputActionValue& Value)
+{
+
 }
 
 void AXenoCombatCharacter::Move(const FInputActionValue& Value)

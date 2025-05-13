@@ -36,6 +36,14 @@ class AXenoCombatCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
+	/** Targeting Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* TargetAction;
+
+	/** Engage & Disengage combat Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* CombatAction;
+
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
@@ -56,6 +64,9 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 			
+
+	void Target(const FInputActionValue& Value);
+	void Combat(const FInputActionValue& Value);
 
 protected:
 
