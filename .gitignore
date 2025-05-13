@@ -2,7 +2,7 @@
 .vs/
 .vscode/
 .vsconfig
-Content/
+#Content/
 Intermediate/
 Saved/
 
