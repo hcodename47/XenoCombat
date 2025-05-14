@@ -30,15 +30,21 @@ bool UTargetingComponent::HasLineOfSightToTarget(FVector From, AActor* Target) c
 		return false;
 	}
 
-	FVector End = Target->GetActorLocation() + FVector(0, 0, 50); // End slightly above the target to avoid collision with the ground
+	FVector End = Target->GetActorLocation();
+
+	FVector Direction = End - From;
+	Direction.Normalize();
+
+	End += Direction * 100.0f; // Extend the line a bit to ensure we hit the target
 
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(GetOwner());
 
 	FHitResult HitResult;
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, From, End, ECC_Visibility, CollisionParams);
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, From, End, ECC_Camera, CollisionParams);
 
-	DrawDebugLine(GetWorld(), From, End, FColor::Red, false, 1.0f);
+	if(bEnableDebugging)
+		DrawDebugLine(GetWorld(), From, End, FColor::Red, false, 1.0f);
 
 	if (bHit)
 	{
@@ -123,13 +129,17 @@ void UTargetingComponent::PickTarget()
 
 		if (TargetActor)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Target acquired: ") + TargetActor->GetName());	
+			if(bEnableDebugging)
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Target acquired: ") + TargetActor->GetName());	
+				
 			OnTargetSelected(TargetActor);
 			return;
 		}
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Nothing to target"));
+	if(bEnableDebugging)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Nothing to target"));
+
 	OnTargetSelected(nullptr);
 }
 

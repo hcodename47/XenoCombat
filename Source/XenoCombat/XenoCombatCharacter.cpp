@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 
 #include "TargetingComponent.h"
+#include "PlayerCombatComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -112,7 +113,28 @@ void AXenoCombatCharacter::Target(const FInputActionValue& Value)
 
 void AXenoCombatCharacter::Combat(const FInputActionValue& Value)
 {
-
+	if(UTargetingComponent* TargetingComponent = FindComponentByClass<UTargetingComponent>())
+	{
+		if(TargetingComponent->IsTargetingSomething())
+		{
+			if(UPlayerCombatComponent* PlayerCombatComponent = FindComponentByClass<UPlayerCombatComponent>())
+			{
+				PlayerCombatComponent->StartAttack(TargetingComponent->GetCurrentTarget());
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player actor has no PlayerCombat component!"));
+			}
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("No target to engage!"));
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player actor has no Targeting component!"));
+	}
 }
 
 void AXenoCombatCharacter::Move(const FInputActionValue& Value)

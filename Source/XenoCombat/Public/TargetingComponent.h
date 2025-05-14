@@ -25,6 +25,9 @@ public:
 	AActor* GetCurrentTarget() const { return CurrentTarget; }
 
 	UFUNCTION(BlueprintCallable, Category = "Targeting")
+	bool IsTargetingSomething() const { return CurrentTarget != nullptr; }
+
+	UFUNCTION(BlueprintCallable, Category = "Targeting")
 	void SetCurrentTarget(AActor* NewTarget) { CurrentTarget = NewTarget; }
 
 	UFUNCTION(BlueprintCallable, Category = "Targeting")
@@ -42,6 +45,9 @@ protected:
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Targeting")
 	float TargetingDistance = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Targeting")
+	bool bEnableDebugging = false;
 
 protected:
 	AActor* CurrentTarget = nullptr;
